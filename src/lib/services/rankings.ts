@@ -262,7 +262,18 @@ export async function bulkReorderRankings(
     }
   }
 
-  // Update each ranking with its new rank
+  // Phase 1: Set all ranks to large temporary values to avoid unique constraint conflicts
+  for (let i = 0; i < orderedIds.length; i++) {
+    const id = orderedIds[i];
+    if (id) {
+      await db
+        .update(rankedEmployers)
+        .set({ rank: -(i + 1), updatedAt: new Date() })
+        .where(and(eq(rankedEmployers.id, id), eq(rankedEmployers.userId, userId)));
+    }
+  }
+
+  // Phase 2: Set the final ranks
   for (let i = 0; i < orderedIds.length; i++) {
     const id = orderedIds[i];
     if (id) {
