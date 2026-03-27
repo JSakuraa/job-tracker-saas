@@ -1,0 +1,74 @@
+.card {
+  padding: 0;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--bg-tertiary);
+  border: var(--border-width-thin) solid var(--border-secondary);
+  font-family: var(--font-pixel);
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.details {
+  flex: 1;
+  min-width: 0;
+}
+
+.filename {
+  font-family: var(--font-pixel);
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.meta {
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.deleteWarning {
+  margin: 0 0 var(--space-4);
+  color: var(--text-secondary);
+}
+
+.deleteActions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: flex-end;
+}
+
+@media (max-width: 600px) {
+  .content {
+    flex-wrap: wrap;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: var(--space-2);
+  }
+}

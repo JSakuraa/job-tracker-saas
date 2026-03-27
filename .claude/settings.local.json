@@ -5,7 +5,12 @@
       "Bash(powershell -ExecutionPolicy Bypass -File \"C:\\\\Users\\\\jtn80\\\\Code\\\\job-tracker-saas\\\\.specify\\\\scripts\\\\powershell\\\\create-new-feature.ps1\" -Json -ShortName \"gamified-job-tracker\" \"Build a gamified application for tracking job applications with resume management, status tracking, quests, rewards, and LLM extension support\")",
       "Bash(powershell -ExecutionPolicy Bypass -Command \"& { $PSVersionTable.PSVersion }\")",
       "Bash(powershell -ExecutionPolicy Bypass -Command \"$PSVersionTable.PSVersion.ToString\\(\\)\")",
-      "Bash(powershell -Version)"
+      "Bash(powershell -Version)",
+      "Bash(npx create-next-app@14:*)",
+      "Bash(npm install)",
+      "Bash(npm run lint)",
+      "Bash(npx tsc:*)",
+      "Bash(powershell -File:*)"
     ]
   }
 }

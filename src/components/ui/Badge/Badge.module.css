@@ -1,0 +1,74 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: var(--border-width-thin) solid var(--border-primary);
+  white-space: nowrap;
+}
+
+/* Sizes */
+.sm {
+  font-size: var(--text-xs);
+  padding: 0.125rem 0.375rem;
+}
+
+.md {
+  font-size: var(--text-xs);
+  padding: 0.25rem 0.5rem;
+}
+
+.lg {
+  font-size: var(--text-sm);
+  padding: 0.375rem 0.75rem;
+}
+
+/* Variants */
+.default {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.success {
+  background-color: var(--color-success);
+  color: var(--color-white);
+}
+
+.warning {
+  background-color: var(--color-warning);
+  color: var(--color-black);
+}
+
+.error {
+  background-color: var(--color-error);
+  color: var(--color-white);
+}
+
+.info {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.xp {
+  background-color: var(--color-xp);
+  color: var(--color-black);
+  animation: xpPulse 2s ease-in-out infinite;
+}
+
+.level {
+  background-color: var(--level-badge-bg);
+  color: var(--level-badge-text);
+  box-shadow: var(--shadow-pixel-sm);
+}
+
+@keyframes xpPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}

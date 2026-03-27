@@ -1,0 +1,68 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.bar {
+  flex: 1;
+  height: 16px;
+  background: var(--bg-tertiary);
+  border: var(--border-width-thin) solid var(--border-secondary);
+  position: relative;
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: var(--color-primary);
+  transition: width var(--transition-normal);
+  position: relative;
+}
+
+.fill.maxLevel {
+  background: linear-gradient(
+    90deg,
+    var(--color-primary) 0%,
+    var(--color-accent) 50%,
+    var(--color-primary) 100%
+  );
+  animation: shimmer 2s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.segments {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  pointer-events: none;
+}
+
+.segment {
+  flex: 1;
+  border-right: var(--border-width-thin) solid var(--bg-primary);
+  opacity: 0.3;
+}
+
+.segment:last-child {
+  border-right: none;
+}
+
+.label {
+  font-family: var(--font-pixel);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  min-width: 50px;
+  text-align: right;
+}

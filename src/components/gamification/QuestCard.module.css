@@ -1,0 +1,58 @@
+.card {
+  transition: opacity var(--transition-fast);
+}
+
+.card.claimed {
+  opacity: 0.6;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reward {
+  font-family: var(--font-pixel);
+  font-size: var(--text-sm);
+  color: var(--text-accent);
+}
+
+.name {
+  font-family: var(--font-pixel);
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.description {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: var(--leading-relaxed);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--space-2);
+  border-top: var(--border-width-thin) solid var(--border-secondary);
+}
+
+.claimedLabel {
+  font-family: var(--font-pixel);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+}
+
+.progressLabel {
+  font-family: var(--font-pixel);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+}

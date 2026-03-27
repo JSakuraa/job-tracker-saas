@@ -1,0 +1,126 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-pixel);
+  font-size: var(--btn-font-size);
+  border: var(--border-width) solid var(--border-primary);
+  cursor: pointer;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast);
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.button:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+}
+
+.button:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Variants */
+.primary {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  box-shadow: var(--shadow-pixel);
+}
+
+.primary:hover:not(:disabled) {
+  background-color: var(--color-primary-hover);
+  box-shadow: var(--shadow-pixel-lg);
+}
+
+.secondary {
+  background-color: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  box-shadow: var(--shadow-pixel);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+  box-shadow: var(--shadow-pixel-lg);
+}
+
+.danger {
+  background-color: var(--color-error);
+  color: var(--color-white);
+  box-shadow: var(--shadow-pixel);
+}
+
+.danger:hover:not(:disabled) {
+  background-color: var(--color-error-hover);
+  box-shadow: var(--shadow-pixel-lg);
+}
+
+.ghost {
+  background-color: transparent;
+  color: var(--text-primary);
+  border: var(--border-width) solid transparent;
+  box-shadow: none;
+}
+
+.ghost:hover:not(:disabled) {
+  background-color: var(--bg-hover);
+  border-color: var(--border-secondary);
+  transform: none;
+}
+
+/* Sizes */
+.sm {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--text-xs);
+}
+
+.md {
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  font-size: var(--text-sm);
+}
+
+.lg {
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-base);
+}
+
+/* Full width */
+.fullWidth {
+  width: 100%;
+}
+
+/* Icons */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Loading spinner */
+.loadingSpinner {
+  width: 1em;
+  height: 1em;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.content {
+  display: inline-flex;
+  align-items: center;
+}

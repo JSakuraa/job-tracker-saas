@@ -1,0 +1,57 @@
+.card {
+  max-width: 800px;
+}
+
+.error {
+  font-family: var(--font-pixel);
+  font-size: var(--text-xs);
+  color: var(--color-error);
+  background-color: rgba(239, 68, 68, 0.1);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-thin) solid var(--color-error);
+  margin-bottom: var(--space-4);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.textareaWrapper {
+  margin-bottom: var(--space-4);
+}
+
+.label {
+  display: block;
+  font-family: var(--font-pixel);
+  font-size: var(--text-xs);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-1);
+}
+
+.textarea {
+  width: 100%;
+  padding: var(--input-padding-y) var(--input-padding-x);
+  background-color: var(--input-bg);
+  border: var(--input-border-width) solid var(--input-border);
+  box-shadow: var(--shadow-pixel-sm);
+  color: var(--text-primary);
+  font-size: var(--text-base);
+  font-family: inherit;
+  resize: vertical;
+  min-height: 120px;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+  box-shadow: var(--shadow-pixel);
+}
+
+.textarea::placeholder {
+  color: var(--text-tertiary);
+}

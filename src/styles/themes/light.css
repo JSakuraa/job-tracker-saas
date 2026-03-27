@@ -1,0 +1,61 @@
+/* T032: Light Theme Variables */
+
+[data-theme='light'] {
+  /* Background colors */
+  --bg-primary: var(--color-gray-50);
+  --bg-secondary: var(--color-white);
+  --bg-tertiary: var(--color-gray-100);
+  --bg-accent: var(--color-primary);
+
+  /* Text colors */
+  --text-primary: var(--color-gray-900);
+  --text-secondary: var(--color-gray-600);
+  --text-tertiary: var(--color-gray-500);
+  --text-inverse: var(--color-white);
+  --text-accent: var(--color-primary);
+
+  /* Border colors */
+  --border-primary: var(--color-gray-900);
+  --border-secondary: var(--color-gray-300);
+  --border-accent: var(--color-primary);
+
+  /* Interactive states */
+  --bg-hover: var(--color-gray-100);
+  --bg-active: var(--color-gray-200);
+  --bg-disabled: var(--color-gray-100);
+  --text-disabled: var(--color-gray-400);
+
+  /* Component-specific */
+  --card-bg: var(--color-white);
+  --card-border: var(--color-gray-900);
+  --card-shadow: var(--shadow-pixel);
+
+  --input-bg: var(--color-white);
+  --input-border: var(--color-gray-900);
+  --input-focus-border: var(--color-primary);
+
+  --btn-primary-bg: var(--color-primary);
+  --btn-primary-text: var(--color-white);
+  --btn-primary-border: var(--color-gray-900);
+
+  --btn-secondary-bg: var(--color-white);
+  --btn-secondary-text: var(--color-gray-900);
+  --btn-secondary-border: var(--color-gray-900);
+
+  /* Status colors */
+  --status-applied: #3b82f6;
+  --status-phone-screen: #8b5cf6;
+  --status-technical: #06b6d4;
+  --status-onsite: #f59e0b;
+  --status-offer: #22c55e;
+  --status-rejected: #ef4444;
+  --status-withdrawn: #6b7280;
+  --status-accepted: #10b981;
+
+  /* Gamification */
+  --xp-bar-bg: var(--color-gray-200);
+  --xp-bar-fill: var(--color-xp);
+  --xp-bar-border: var(--color-gray-900);
+  --level-badge-bg: var(--color-secondary);
+  --level-badge-text: var(--color-white);
+}

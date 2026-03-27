@@ -1,0 +1,32 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.dangerCard {
+  border-color: var(--color-error);
+}
+
+.warning {
+  color: var(--color-error);
+  font-size: var(--text-sm);
+  margin: 0 0 var(--space-3);
+}
+
+.deleteInfo {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  margin: 0 0 var(--space-3);
+}
+
+.confirmDelete {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
