@@ -2,6 +2,7 @@
 
 'use client';
 
+import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { XPDisplay } from '@/components/gamification';
@@ -39,7 +40,7 @@ export function Sidebar() {
             return (
               <li key={item.href}>
                 <Link
-                  href={item.href}
+                  href={item.href as Route}
                   className={`${styles.link} ${isActive ? styles.active : ''}`}
                   aria-current={isActive ? 'page' : undefined}
                 >
