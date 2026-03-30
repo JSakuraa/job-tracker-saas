@@ -4,6 +4,7 @@ import { db } from '@/lib/db/client';
 import { jobApplications, statusChanges } from '@/lib/db/schema';
 import { eq, and, desc, sql, like, or } from 'drizzle-orm';
 import { awardXp } from '@/lib/xp/service';
+import { updateQuestProgress } from '@/lib/services/quests';
 import type { JobApplication, ApplicationStatus } from '@/types/entities';
 import type { ApplicationFilterInput, PaginationInput } from '@/lib/validations';
 
@@ -64,6 +65,9 @@ export async function createApplication(
     'job_application',
     application.id
   );
+
+  // Update quest progress for application creation
+  await updateQuestProgress(input.userId, 'application_created');
 
   return {
     application,

@@ -10,7 +10,8 @@
       "Bash(npm install)",
       "Bash(npm run lint)",
       "Bash(npx tsc:*)",
-      "Bash(powershell -File:*)"
+      "Bash(powershell -File:*)",
+      "Bash(npm run build:*)"
     ]
   }
 }
