@@ -4,8 +4,10 @@ import bcrypt from 'bcryptjs';
 import { db } from '@/lib/db/client';
 import { users } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
+import { authConfig } from './auth.config';
 
-export const authConfig: NextAuthConfig = {
+export const fullAuthConfig: NextAuthConfig = {
+  ...authConfig,
   providers: [
     Credentials({
       name: 'credentials',
@@ -45,11 +47,8 @@ export const authConfig: NextAuthConfig = {
       },
     }),
   ],
-  pages: {
-    signIn: '/login',
-    newUser: '/register',
-  },
   callbacks: {
+    ...authConfig.callbacks,
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -62,27 +61,5 @@ export const authConfig: NextAuthConfig = {
       }
       return session;
     },
-    async authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith('/dashboard') ||
-        nextUrl.pathname.startsWith('/applications') ||
-        nextUrl.pathname.startsWith('/resumes') ||
-        nextUrl.pathname.startsWith('/quests') ||
-        nextUrl.pathname.startsWith('/goals') ||
-        nextUrl.pathname.startsWith('/rankings') ||
-        nextUrl.pathname.startsWith('/rewards') ||
-        nextUrl.pathname.startsWith('/profile');
-
-      if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect to login
-      }
-
-      return true;
-    },
-  },
-  session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 };

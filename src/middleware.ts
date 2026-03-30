@@ -1,6 +1,7 @@
-import { auth } from '@/lib/auth';
+import NextAuth from 'next-auth';
+import { authConfig } from '@/lib/auth/auth.config';
 
-export default auth;
+export default NextAuth(authConfig).auth;
 
 export const config = {
   matcher: [
@@ -12,6 +13,7 @@ export const config = {
     '/rankings/:path*',
     '/rewards/:path*',
     '/profile/:path*',
-    '/api/:path*',
+    // Protect API routes except auth endpoints
+    '/api/((?!auth).*)',
   ],
 };
