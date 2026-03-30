@@ -43,25 +43,22 @@ export async function awardXp(
   const leveledUp = wouldLevelUp(previousXp, xpToAward);
   const levelsGained = calculateLevelsGained(previousXp, xpToAward);
 
-  // Update user's total XP and create XP event in a transaction
-  await db.transaction(async (tx) => {
-    // Update user's total XP
-    await tx
-      .update(users)
-      .set({
-        totalXp: sql`${users.totalXp} + ${xpToAward}`,
-        updatedAt: new Date(),
-      })
-      .where(eq(users.id, userId));
+  // Update user's total XP
+  await db
+    .update(users)
+    .set({
+      totalXp: sql`${users.totalXp} + ${xpToAward}`,
+      updatedAt: new Date(),
+    })
+    .where(eq(users.id, userId));
 
-    // Log the XP event
-    await tx.insert(xpEvents).values({
-      userId,
-      actionType,
-      xpAmount: xpToAward,
-      relatedEntityType: relatedEntityType ?? null,
-      relatedEntityId: relatedEntityId ?? null,
-    });
+  // Log the XP event
+  await db.insert(xpEvents).values({
+    userId,
+    actionType,
+    xpAmount: xpToAward,
+    relatedEntityType: relatedEntityType ?? null,
+    relatedEntityId: relatedEntityId ?? null,
   });
 
   return {

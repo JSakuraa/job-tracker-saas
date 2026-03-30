@@ -32,29 +32,24 @@ export async function updateApplicationStatus(
     return null;
   }
 
-  // Update application status and create status change record in a transaction
-  const [statusChange] = await db.transaction(async (tx) => {
-    // Update application status
-    await tx
-      .update(jobApplications)
-      .set({
-        status: newStatus,
-        updatedAt: new Date(),
-      })
-      .where(eq(jobApplications.id, applicationId));
+  // Update application status
+  await db
+    .update(jobApplications)
+    .set({
+      status: newStatus,
+      updatedAt: new Date(),
+    })
+    .where(eq(jobApplications.id, applicationId));
 
-    // Create status change record
-    const [change] = await tx
-      .insert(statusChanges)
-      .values({
-        applicationId,
-        previousStatus,
-        newStatus,
-      })
-      .returning();
-
-    return [change];
-  });
+  // Create status change record
+  const [statusChange] = await db
+    .insert(statusChanges)
+    .values({
+      applicationId,
+      previousStatus,
+      newStatus,
+    })
+    .returning();
 
   if (!statusChange) {
     throw new Error('Failed to create status change');
