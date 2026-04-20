@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { useToast } from '@/components/ui/Toast';
 import { QuestProgress } from './QuestProgress';
+import { useXP } from './XPContext';
 import type { Quest, UserQuest } from '@/types/entities';
 import styles from './QuestCard.module.css';
 
@@ -29,6 +30,7 @@ const QUEST_TYPE_LABELS: Record<string, string> = {
 export function QuestCard({ quest, userQuest, progressPercent, onClaim }: QuestCardProps) {
   const router = useRouter();
   const { addToast } = useToast();
+  const { refreshXP } = useXP();
   const [isClaiming, setIsClaiming] = useState(false);
 
   const status = userQuest?.status ?? 'not_started';
@@ -53,6 +55,7 @@ export function QuestCard({ quest, userQuest, progressPercent, onClaim }: QuestC
 
       if (data.data.xpAwarded) {
         addToast({ type: 'xp', message: `+${data.data.xpAwarded} XP earned!` });
+        refreshXP();
       }
 
       addToast({ type: 'success', message: 'Quest reward claimed!' });

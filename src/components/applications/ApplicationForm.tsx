@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/Card';
 import { useToast } from '@/components/ui/Toast';
+import { useXP } from '@/components/gamification';
 import styles from './ApplicationForm.module.css';
 
 interface ApplicationFormProps {
@@ -26,6 +27,7 @@ interface ApplicationFormProps {
 export function ApplicationForm({ initialData, applicationId, onSuccess }: ApplicationFormProps) {
   const router = useRouter();
   const { addToast } = useToast();
+  const { refreshXP } = useXP();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -84,6 +86,8 @@ export function ApplicationForm({ initialData, applicationId, onSuccess }: Appli
           type: 'xp',
           message: `+${data.xpAwarded} XP earned!`,
         });
+        // Refresh XP display
+        refreshXP();
       }
 
       addToast({

@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { useToast } from '@/components/ui/Toast';
+import { useXP } from './XPContext';
 import type { PersonalGoal } from '@/types/entities';
 import styles from './GoalCard.module.css';
 
@@ -31,6 +32,7 @@ const TARGET_TYPE_LABELS: Record<string, string> = {
 export function GoalCard({ goal, onUpdate }: GoalCardProps) {
   const router = useRouter();
   const { addToast } = useToast();
+  const { refreshXP } = useXP();
   const [isAchieving, setIsAchieving] = useState(false);
   const [isAbandoning, setIsAbandoning] = useState(false);
 
@@ -55,6 +57,7 @@ export function GoalCard({ goal, onUpdate }: GoalCardProps) {
 
       if (data.data.xpAwarded) {
         addToast({ type: 'xp', message: `+${data.data.xpAwarded} XP earned!` });
+        refreshXP();
       }
 
       addToast({ type: 'success', message: 'Goal achieved!' });

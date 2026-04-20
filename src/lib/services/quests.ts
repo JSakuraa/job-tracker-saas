@@ -130,6 +130,7 @@ export async function startQuest(
 
 /**
  * Update quest progress based on an action
+ * Auto-enrolls users in matching quests they haven't started yet
  */
 export async function updateQuestProgress(
   userId: string,
@@ -138,7 +139,57 @@ export async function updateQuestProgress(
 ): Promise<{ questsCompleted: string[] }> {
   const questsCompleted: string[] = [];
 
-  // Get all active quests for user that match this action
+  // First, auto-enroll user in any matching active quests they haven't started
+  const allActiveQuests = await db
+    .select()
+    .from(quests)
+    .where(eq(quests.isActive, true));
+
+  const existingUserQuests = await db
+    .select()
+    .from(userQuests)
+    .where(eq(userQuests.userId, userId));
+
+  const existingQuestIds = new Set(existingUserQuests.map(uq => uq.questId));
+
+  // Auto-start matching quests
+  for (const quest of allActiveQuests) {
+    if (existingQuestIds.has(quest.id)) {
+      continue;
+    }
+
+    const requirements = quest.requirements as QuestRequirements;
+
+    // Only auto-start if the action matches
+    if (requirements.action !== actionType) {
+      continue;
+    }
+
+    // Check target status if required
+    if (requirements.targetStatus && requirements.targetStatus !== targetStatus) {
+      continue;
+    }
+
+    // Calculate expiration for daily/weekly quests
+    let expiresAt: Date | null = null;
+    if (quest.type === 'daily') {
+      expiresAt = new Date();
+      expiresAt.setHours(23, 59, 59, 999);
+    } else if (quest.type === 'weekly') {
+      expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + (7 - expiresAt.getDay()));
+      expiresAt.setHours(23, 59, 59, 999);
+    }
+
+    await db.insert(userQuests).values({
+      userId,
+      questId: quest.id,
+      progress: 0,
+      expiresAt,
+    });
+  }
+
+  // Now get all active quests for user that match this action (including newly enrolled)
   const activeUserQuests = await db
     .select({
       userQuest: userQuests,

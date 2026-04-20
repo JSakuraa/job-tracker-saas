@@ -5,6 +5,7 @@ import { jobApplications, statusChanges } from '@/lib/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { awardXp } from '@/lib/xp/service';
 import { updateQuestProgress } from '@/lib/services/quests';
+import { updateGoalProgress } from '@/lib/services/goals';
 import type { StatusChange, ApplicationStatus } from '@/types/entities';
 
 /**
@@ -67,6 +68,9 @@ export async function updateApplicationStatus(
 
   // Update quest progress for status change
   await updateQuestProgress(userId, 'status_updated', newStatus);
+
+  // Update goal progress for status change
+  await updateGoalProgress(userId, 'status_updated');
 
   return {
     statusChange,

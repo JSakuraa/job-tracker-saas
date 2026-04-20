@@ -8,3 +8,4 @@ export { QuestProgress } from './QuestProgress';
 export { GoalCard } from './GoalCard';
 export { GoalForm } from './GoalForm';
 export { GoalList } from './GoalList';
+export { XPProvider, useXP } from './XPContext';

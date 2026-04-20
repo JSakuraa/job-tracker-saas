@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { StatusBadge } from '@/components/ui/Badge';
 import { Modal } from '@/components/ui/Modal';
 import { useToast } from '@/components/ui/Toast';
+import { useXP } from '@/components/gamification';
 import { StatusTimeline } from './StatusTimeline';
 import { ResumePicker, ResumeCard } from '@/components/resumes';
 import type { JobApplication, StatusChange, ApplicationStatus, Resume } from '@/types/entities';
@@ -35,6 +36,7 @@ interface ApplicationDetailProps {
 export function ApplicationDetail({ application, history, attachedResumes = [] }: ApplicationDetailProps) {
   const router = useRouter();
   const { addToast } = useToast();
+  const { refreshXP } = useXP();
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isResumePickerOpen, setIsResumePickerOpen] = useState(false);
@@ -100,6 +102,7 @@ export function ApplicationDetail({ application, history, attachedResumes = [] }
 
       if (data.xpAwarded) {
         addToast({ type: 'xp', message: `+${data.xpAwarded} XP earned!` });
+        refreshXP();
       }
 
       addToast({ type: 'success', message: 'Status updated!' });

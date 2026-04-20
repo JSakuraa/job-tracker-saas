@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { ThemeProvider } from '@/lib/theme/provider';
 import { ToastProvider } from '@/components/ui/Toast';
+import { XPProvider } from '@/components/gamification';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -31,7 +32,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ThemeProvider>
-          <ToastProvider>{children}</ToastProvider>
+          <ToastProvider>
+            <XPProvider>{children}</XPProvider>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

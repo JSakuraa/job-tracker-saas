@@ -2,51 +2,18 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
 import { LevelProgressBar } from './LevelProgressBar';
+import { useXP } from './XPContext';
 import styles from './XPDisplay.module.css';
 
-interface XPData {
-  total: number;
-  level: number;
-  levelTitle: string;
-  currentLevelXp: number;
-  nextLevelXp: number;
-  progressXp: number;
-  progressPercent: number;
-  isMaxLevel: boolean;
-}
-
 interface XPDisplayProps {
-  initialData?: XPData;
   compact?: boolean;
 }
 
-export function XPDisplay({ initialData, compact = false }: XPDisplayProps) {
-  const [data, setData] = useState<XPData | null>(initialData ?? null);
-  const [isLoading, setIsLoading] = useState(!initialData);
+export function XPDisplay({ compact = false }: XPDisplayProps) {
+  const { xpData, isLoading } = useXP();
 
-  useEffect(() => {
-    if (!initialData) {
-      fetchStats();
-    }
-  }, [initialData]);
-
-  const fetchStats = async () => {
-    try {
-      const response = await fetch('/api/user/stats');
-      if (response.ok) {
-        const result = await response.json();
-        setData(result.data.xp);
-      }
-    } catch {
-      console.error('Failed to fetch XP stats');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  if (isLoading || !data) {
+  if (isLoading || !xpData) {
     return (
       <div className={`${styles.container} ${compact ? styles.compact : ''}`}>
         <div className={styles.loading}>...</div>
@@ -57,8 +24,8 @@ export function XPDisplay({ initialData, compact = false }: XPDisplayProps) {
   if (compact) {
     return (
       <div className={`${styles.container} ${styles.compact}`}>
-        <span className={styles.levelBadge}>LV{data.level}</span>
-        <span className={styles.xpCompact}>{data.total} XP</span>
+        <span className={styles.levelBadge}>LV{xpData.level}</span>
+        <span className={styles.xpCompact}>{xpData.total} XP</span>
       </div>
     );
   }
@@ -66,20 +33,20 @@ export function XPDisplay({ initialData, compact = false }: XPDisplayProps) {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <span className={styles.levelBadge}>LEVEL {data.level}</span>
-        <span className={styles.title}>{data.levelTitle}</span>
+        <span className={styles.levelBadge}>LEVEL {xpData.level}</span>
+        <span className={styles.title}>{xpData.levelTitle}</span>
       </div>
       <div className={styles.xpInfo}>
-        <span className={styles.xpTotal}>{data.total} XP</span>
-        {!data.isMaxLevel && (
+        <span className={styles.xpTotal}>{xpData.total} XP</span>
+        {!xpData.isMaxLevel && (
           <span className={styles.xpNext}>
-            {data.nextLevelXp - data.total} to next level
+            {xpData.nextLevelXp - xpData.total} to next level
           </span>
         )}
       </div>
       <LevelProgressBar
-        progress={data.progressPercent}
-        isMaxLevel={data.isMaxLevel}
+        progress={xpData.progressPercent}
+        isMaxLevel={xpData.isMaxLevel}
       />
     </div>
   );
