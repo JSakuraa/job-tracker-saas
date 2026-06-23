@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/Input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/Card';
 import { useToast } from '@/components/ui/Toast';
 import { useXP } from '@/components/gamification';
+import { CompanyAutocomplete } from '@/components/companies';
 import styles from './ApplicationForm.module.css';
 
 interface ApplicationFormProps {
@@ -34,6 +35,7 @@ export function ApplicationForm({ initialData, applicationId, onSuccess }: Appli
   const [formData, setFormData] = useState<{
     jobTitle: string;
     companyName: string;
+    companyId: string;
     dateApplied: string;
     referralName: string;
     referralContact: string;
@@ -41,6 +43,7 @@ export function ApplicationForm({ initialData, applicationId, onSuccess }: Appli
   }>({
     jobTitle: initialData?.jobTitle ?? '',
     companyName: initialData?.companyName ?? '',
+    companyId: '',
     dateApplied: initialData?.dateApplied ?? new Date().toISOString().slice(0, 10),
     referralName: initialData?.referralName ?? '',
     referralContact: initialData?.referralContact ?? '',
@@ -65,7 +68,9 @@ export function ApplicationForm({ initialData, applicationId, onSuccess }: Appli
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
+          jobTitle: formData.jobTitle,
+          companyName: formData.companyName,
+          companyId: formData.companyId || undefined,
           dateApplied: new Date(formData.dateApplied).toISOString(),
           referralName: formData.referralName || null,
           referralContact: formData.referralContact || null,
@@ -131,11 +136,12 @@ export function ApplicationForm({ initialData, applicationId, onSuccess }: Appli
               placeholder="e.g. Software Engineer"
             />
 
-            <Input
+            <CompanyAutocomplete
               label="Company Name"
-              name="companyName"
               value={formData.companyName}
-              onChange={handleChange}
+              onChange={(value) => setFormData((prev) => ({ ...prev, companyName: value, companyId: '' }))}
+              onSelect={(company) => setFormData((prev) => ({ ...prev, companyName: company.name, companyId: company.id }))}
+              onCreateNew={(name) => setFormData((prev) => ({ ...prev, companyName: name, companyId: '' }))}
               required
               placeholder="e.g. Acme Corp"
             />

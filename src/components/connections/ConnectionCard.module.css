@@ -1,0 +1,91 @@
+.card {
+  transition: transform 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) !important;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.name {
+  font-family: var(--font-pixel);
+  font-size: var(--text-base);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.badge {
+  font-family: var(--font-pixel);
+  font-size: var(--text-xs);
+  padding: 2px var(--space-2);
+  flex-shrink: 0;
+}
+
+.badgeConnected {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
+.badgeCold {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: var(--border-width-thin) solid var(--border-secondary);
+}
+
+.company {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.contacts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.contactLink {
+  font-size: var(--text-sm);
+  color: var(--accent);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.contactLink:hover {
+  text-decoration: underline;
+}
+
+.notes {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: var(--space-1);
+}

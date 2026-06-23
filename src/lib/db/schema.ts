@@ -18,6 +18,17 @@ import { relations } from 'drizzle-orm';
 // Enums
 // ============================================================================
 
+export const companySource = pgEnum('company_source', [
+  'application',
+  'companies_tab',
+  'contact',
+]);
+
+export const relationshipType = pgEnum('relationship_type', [
+  'established_connection',
+  'cold_outreach',
+]);
+
 export const applicationStatus = pgEnum('application_status', [
   'applied',
   'phone_screen',
@@ -96,6 +107,28 @@ export const users = pgTable(
   (table) => [index('users_deleted_at_idx').on(table.deletedAt)]
 );
 
+// T011a: Companies table (replaces ranked_employers)
+export const companies = pgTable(
+  'companies',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    name: varchar('name', { length: 255 }).notNull(),
+    rank: integer('rank'),
+    notes: text('notes'),
+    source: companySource('source').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    unique('companies_user_id_name_unique').on(table.userId, table.name),
+    index('companies_user_id_rank_idx').on(table.userId, table.rank),
+    index('companies_user_id_name_idx').on(table.userId, table.name),
+  ]
+);
+
 // T011: Job Applications table
 export const jobApplications = pgTable(
   'job_applications',
@@ -109,6 +142,9 @@ export const jobApplications = pgTable(
     jobTitle: varchar('job_title', { length: 255 }).notNull(),
     companyName: varchar('company_name', { length: 255 }).notNull(),
     dateApplied: timestamp('date_applied', { withTimezone: true }).notNull(),
+
+    // Company FK (nullable during migration; always set on new applications)
+    companyId: uuid('company_id').references(() => companies.id, { onDelete: 'set null' }),
 
     // Optional fields
     referralName: varchar('referral_name', { length: 255 }),
@@ -267,6 +303,31 @@ export const rankedEmployers = pgTable(
   ]
 );
 
+// T011b: Connections table
+export const connections = pgTable(
+  'connections',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    fullName: varchar('full_name', { length: 255 }).notNull(),
+    email: varchar('email', { length: 255 }),
+    linkedinUrl: varchar('linkedin_url', { length: 500 }),
+    phoneNumber: varchar('phone_number', { length: 50 }),
+    companyId: uuid('company_id').references(() => companies.id, { onDelete: 'set null' }),
+    relationshipType: relationshipType('relationship_type').notNull(),
+    notes: text('notes'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index('connections_user_id_idx').on(table.userId),
+    index('connections_user_id_relationship_type_idx').on(table.userId, table.relationshipType),
+    index('connections_company_id_idx').on(table.companyId),
+  ]
+);
+
 // T019: Rewards table
 export const rewards = pgTable('rewards', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -333,12 +394,26 @@ export const usersRelations = relations(users, ({ many }) => ({
   userQuests: many(userQuests),
   personalGoals: many(personalGoals),
   rankedEmployers: many(rankedEmployers),
+  companies: many(companies),
+  connections: many(connections),
   userRewards: many(userRewards),
   xpEvents: many(xpEvents),
 }));
 
+export const companiesRelations = relations(companies, ({ one, many }) => ({
+  user: one(users, { fields: [companies.userId], references: [users.id] }),
+  applications: many(jobApplications),
+  connections: many(connections),
+}));
+
+export const connectionsRelations = relations(connections, ({ one }) => ({
+  user: one(users, { fields: [connections.userId], references: [users.id] }),
+  company: one(companies, { fields: [connections.companyId], references: [companies.id] }),
+}));
+
 export const jobApplicationsRelations = relations(jobApplications, ({ one, many }) => ({
   user: one(users, { fields: [jobApplications.userId], references: [users.id] }),
+  company: one(companies, { fields: [jobApplications.companyId], references: [companies.id] }),
   statusChanges: many(statusChanges),
   applicationResumes: many(applicationResumes),
 }));

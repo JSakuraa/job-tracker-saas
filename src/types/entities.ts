@@ -11,6 +11,8 @@ import type {
   userQuests,
   personalGoals,
   rankedEmployers,
+  companies,
+  connections,
   rewards,
   userRewards,
   xpEvents,
@@ -65,9 +67,19 @@ export type PersonalGoal = InferSelectModel<typeof personalGoals>;
 export type NewPersonalGoal = InferInsertModel<typeof personalGoals>;
 export type GoalStatus = PersonalGoal['status'];
 
-// Ranked Employer types
+// Ranked Employer types (deprecated — use Company/Connection instead)
 export type RankedEmployer = InferSelectModel<typeof rankedEmployers>;
 export type NewRankedEmployer = InferInsertModel<typeof rankedEmployers>;
+
+// Company types
+export type Company = InferSelectModel<typeof companies>;
+export type NewCompany = InferInsertModel<typeof companies>;
+export type CompanySource = Company['source'];
+
+// Connection types
+export type Connection = InferSelectModel<typeof connections>;
+export type NewConnection = InferInsertModel<typeof connections>;
+export type RelationshipType = Connection['relationshipType'];
 
 // Reward types
 export type Reward = InferSelectModel<typeof rewards>;
@@ -106,4 +118,14 @@ export type RewardWithUnlockStatus = Reward & {
 export type RankedEmployerWithApplications = RankedEmployer & {
   applicationCount: number;
   latestApplication: Pick<JobApplication, 'id' | 'jobTitle' | 'status' | 'dateApplied'> | null;
+};
+
+// Composite types for new features
+export type CompanyWithCounts = Company & {
+  applicationCount: number;
+  connectionCount: number;
+};
+
+export type ConnectionWithCompany = Connection & {
+  company: Pick<Company, 'id' | 'name'> | null;
 };
