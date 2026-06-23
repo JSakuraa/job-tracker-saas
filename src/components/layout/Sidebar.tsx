@@ -20,7 +20,8 @@ const navItems: NavItem[] = [
   { label: 'RESUMES', href: '/resumes', icon: '>' },
   { label: 'QUESTS', href: '/quests', icon: '>' },
   { label: 'GOALS', href: '/goals', icon: '>' },
-  { label: 'RANKINGS', href: '/rankings', icon: '>' },
+  { label: 'COMPANIES', href: '/companies', icon: '>' },
+  { label: 'CONNECTIONS', href: '/connections', icon: '>' },
   { label: 'REWARDS', href: '/rewards', icon: '>' },
   { label: 'PROFILE', href: '/profile', icon: '>' },
 ];

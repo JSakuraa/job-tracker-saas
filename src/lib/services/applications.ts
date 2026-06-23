@@ -6,6 +6,7 @@ import { eq, and, desc, sql, like, or } from 'drizzle-orm';
 import { awardXp } from '@/lib/xp/service';
 import { updateQuestProgress } from '@/lib/services/quests';
 import { updateGoalProgress } from '@/lib/services/goals';
+import { createOrGetCompany } from '@/lib/services/companies';
 import type { JobApplication, ApplicationStatus } from '@/types/entities';
 import type { ApplicationFilterInput, PaginationInput } from '@/lib/validations';
 
@@ -34,12 +35,15 @@ export interface UpdateApplicationInput {
 export async function createApplication(
   input: CreateApplicationInput
 ): Promise<{ application: JobApplication; xpAwarded: number }> {
+  const company = await createOrGetCompany(input.userId, input.companyName, 'application');
+
   const [application] = await db
     .insert(jobApplications)
     .values({
       userId: input.userId,
       jobTitle: input.jobTitle,
       companyName: input.companyName,
+      companyId: company.id,
       dateApplied: input.dateApplied,
       referralName: input.referralName,
       referralContact: input.referralContact,
@@ -156,12 +160,19 @@ export async function updateApplication(
   userId: string,
   input: UpdateApplicationInput
 ): Promise<JobApplication | null> {
+  const updateData: UpdateApplicationInput & { updatedAt: Date; companyId?: string } = {
+    ...input,
+    updatedAt: new Date(),
+  };
+
+  if (input.companyName) {
+    const company = await createOrGetCompany(userId, input.companyName, 'application');
+    updateData.companyId = company.id;
+  }
+
   const [updated] = await db
     .update(jobApplications)
-    .set({
-      ...input,
-      updatedAt: new Date(),
-    })
+    .set(updateData)
     .where(and(eq(jobApplications.id, applicationId), eq(jobApplications.userId, userId)))
     .returning();
 

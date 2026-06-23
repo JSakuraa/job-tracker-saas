@@ -1,0 +1,139 @@
+# Implementation Plan: Companies and Connections Management
+
+**Branch**: `002-companies-connections` | **Date**: 2026-06-22 | **Spec**: [spec.md](./spec.md)  
+**Input**: Feature specification from `/specs/002-companies-connections/spec.md`
+
+## Summary
+
+Replace the existing `rankedEmployers` table with a unified `companies` table that is referenced by applications, the renamed Companies tab, and a new Connections tab. Migrate the `/rankings` page to `/companies`, extend it to show both ranked and unranked companies, and introduce full CRUD company management. Add a `connections` table and a new `/connections` tab for managing a professional network of contacts. Introduce a shared company autofill component used across all three entry points.
+
+## Technical Context
+
+**Language/Version**: TypeScript 5.x / Node.js 20 LTS  
+**Primary Dependencies**: Next.js 14 (App Router), Drizzle ORM, Zod, NextAuth.js  
+**Storage**: Neon PostgreSQL (serverless)  
+**Testing**: Vitest (unit), Playwright (e2e)  
+**Target Platform**: Web (desktop + mobile responsive)  
+**Project Type**: Web application (full-stack Next.js)  
+**Performance Goals**: Autofill suggestions within 300ms; zero N+1 queries  
+**Constraints**: All data scoped per authenticated user; company names normalized (lowercase + trim); deletion blocked when references exist  
+**Scale/Scope**: Single user per session; expected <500 companies and <500 connections per user at launch
+
+## Constitution Check
+
+*GATE: Must pass before Phase 0 research. Re-checked after Phase 1 design.*
+
+| Principle | Status | Notes |
+|-----------|--------|-------|
+| Type Safety (no `any`) | ✅ Pass | All new schema types inferred via Drizzle `InferSelectModel` |
+| DRY / No premature abstraction | ✅ Pass | `CompanyAutocomplete` shared component justified — used in 3 places |
+| Test-First | ✅ Pass | Contract tests for new API endpoints required before integration |
+| N+1 prohibition | ✅ Pass | Autofill uses a single indexed query; deletion check uses COUNT queries |
+| Responsive design | ✅ Pass | Companies and Connections tabs must work on mobile per SC-006 |
+| Loading states for async ops | ✅ Pass | Autofill dropdown must show loading state during debounce window |
+| Error messages non-technical | ✅ Pass | Deletion blocked message uses counts ("2 applications, 1 contact"), no internals |
+| Linting zero warnings | ✅ Pass | No new lint exemptions introduced |
+| WCAG 2.1 AA | ✅ Pass | Autocomplete dropdown requires keyboard navigation and ARIA roles |
+
+**No constitution violations. No Complexity Tracking entry needed.**
+
+## Project Structure
+
+### Documentation (this feature)
+
+```text
+specs/002-companies-connections/
+├── plan.md              # This file
+├── research.md          # Phase 0 output
+├── data-model.md        # Phase 1 output
+├── quickstart.md        # Phase 1 output
+├── contracts/
+│   ├── companies.md     # Companies API contract
+│   └── connections.md   # Connections API contract
+└── tasks.md             # Phase 2 output (/speckit.tasks)
+```
+
+### Source Code changes (repository root)
+
+```text
+src/
+├── app/
+│   ├── (dashboard)/
+│   │   ├── companies/               # NEW — replaces /rankings
+│   │   │   ├── page.tsx
+│   │   │   └── page.module.css
+│   │   └── connections/             # NEW
+│   │       ├── page.tsx
+│   │       └── page.module.css
+│   └── api/
+│       ├── companies/               # NEW — replaces /api/rankings
+│       │   ├── route.ts             # GET list, POST create
+│       │   ├── search/
+│       │   │   └── route.ts         # GET autofill search
+│       │   ├── reorder/
+│       │   │   └── route.ts         # POST bulk reorder (kept from rankings)
+│       │   └── [id]/
+│       │       └── route.ts         # GET, PUT, DELETE
+│       └── connections/             # NEW
+│           ├── route.ts             # GET list, POST create
+│           └── [id]/
+│               ├── route.ts         # GET, PUT, DELETE
+│               └── status/
+│                   └── route.ts     # PATCH — "Mark as Connected"
+├── components/
+│   ├── companies/                   # NEW — replaces /components/rankings
+│   │   ├── CompanyList.tsx
+│   │   ├── CompanyCard.tsx
+│   │   ├── AddCompanyForm.tsx
+│   │   ├── CompanyAutocomplete.tsx  # Shared — also imported by applications + connections
+│   │   └── index.ts
+│   └── connections/                 # NEW
+│       ├── ConnectionList.tsx
+│       ├── ConnectionCard.tsx
+│       ├── AddConnectionForm.tsx
+│       └── index.ts
+├── lib/
+│   ├── db/
+│   │   └── schema.ts               # UPDATED — add companies, connections; update jobApplications
+│   └── services/
+│       ├── companies.ts             # NEW — replaces rankings.ts
+│       └── connections.ts           # NEW
+└── types/
+    └── entities.ts                  # UPDATED — add Company, Connection types; deprecate RankedEmployer
+
+drizzle/
+└── migrations/                      # NEW migration files generated by db:generate
+    ├── XXXX_create_companies.sql
+    ├── XXXX_add_company_fk_to_applications.sql
+    └── XXXX_create_connections.sql
+```
+
+**Structure Decision**: Standard Next.js App Router with feature-based component folders. `/rankings` and `/api/rankings` are retired in favor of `/companies` and `/api/companies` respectively. The `next.config.ts` redirect from `/rankings` → `/companies` preserves any bookmarked links.
+
+## Migration Strategy
+
+The existing `rankedEmployers` table is replaced in two migration steps:
+
+**M001 — Create `companies`, backfill from `rankedEmployers`**:
+1. Create `companies` table (see data-model.md)
+2. `INSERT INTO companies SELECT ... FROM ranked_employers` (rank kept, source = 'companies_tab')
+3. Drop `ranked_employers` table
+
+**M002 — Add `company_id` FK to `job_applications`, create `connections`**:
+1. Add nullable `company_id` column to `job_applications` referencing `companies(id)` ON DELETE SET NULL
+2. Backfill: match `job_applications.company_name` (lowercased) to `companies.name`; for unmatched names, insert a new unranked company and link it
+3. Create `connections` table
+4. `company_name` column on `job_applications` is kept for now as a denormalized display cache; future cleanup is out of scope for this feature
+
+> **Note**: Keep `company_name` on `job_applications` to avoid a breaking change in the existing service layer during this feature. New application creation will write both `company_name` (for backwards compat) and `company_id`.
+
+## Phase 0 Output
+
+See [research.md](./research.md) for all decisions and rationale.
+
+## Phase 1 Output
+
+See [data-model.md](./data-model.md) for full schema.  
+See [contracts/companies.md](./contracts/companies.md) for Companies API contract.  
+See [contracts/connections.md](./contracts/connections.md) for Connections API contract.  
+See [quickstart.md](./quickstart.md) for implementation onboarding.

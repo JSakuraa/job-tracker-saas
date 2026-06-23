@@ -1,6 +1,6 @@
 # Job Tracker SaaS Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2025-03-25
+Auto-generated from all feature plans. Last updated: 2026-06-22
 
 ## Active Technologies
 
@@ -20,6 +20,8 @@ src/
 │   ├── applications/        # Application-specific components
 │   ├── resumes/             # Resume-specific components
 │   ├── gamification/        # XP, level, quest components
+│   ├── companies/           # Companies tab + CompanyAutocomplete (shared)
+│   ├── connections/         # Connections tab components
 │   └── layout/              # Navigation, sidebar
 ├── lib/
 │   ├── db/                  # Drizzle schema and client
@@ -74,6 +76,7 @@ CSS:
 
 ## Recent Changes
 
+- 002-companies-connections: Replaces `ranked_employers` with unified `companies` table; renames `/rankings` → `/companies`; adds `/connections` tab; introduces shared `CompanyAutocomplete` component used in applications, companies, and connections forms; adds `connections` table for professional contact tracking
 - 001-gamified-job-tracker: Added TypeScript 5.x with Node.js 20 LTS + Next.js 14 (App Router), Drizzle ORM, Azure Blob Storage SDK, NextAuth.js
 
 <!-- MANUAL ADDITIONS START -->

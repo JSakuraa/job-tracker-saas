@@ -46,8 +46,7 @@ next-env.d.ts
 *.temp
 .cache/
 
-# Drizzle
-drizzle/migrations/*.sql
+# Drizzle (SQL migration files are tracked — do not ignore)
 
 # Playwright
 /test-results/
